@@ -4,7 +4,7 @@ import UserModel from '../models/UserModel';
 import { IToken, IUser } from '../interfaces/UserInterface';
 
 dotenv.config();
-const JWTSECRET = process.env.JWT_SECRET || 'minhasenha';
+const JWTSECRET = process.env.JWT_SECRET || 'senha';
 
 export default class UserService {
   public model = new UserModel();
@@ -14,15 +14,10 @@ export default class UserService {
     return users;
   };
 
-  public createUser = async (
-    username: string,
-    classe: string,
-    level: number,
-    password: string,
-  ): Promise<IToken> => {
-    const newUser = await this.model.createUser(username, classe, level, password);
+  public createUser = async (user: IUser): Promise<IToken> => {
+    const User = await this.model.createUser(user);
 
-    const token = jwt.sign({ id: newUser.id }, JWTSECRET, {
+    const token = jwt.sign({ id: User.id }, JWTSECRET, {
       expiresIn: '7d',
       algorithm: 'HS256',
     });

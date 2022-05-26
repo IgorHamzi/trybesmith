@@ -9,13 +9,9 @@ export default class UserModel {
     return users as IUser[];
   };
 
-  public createUser = async (
-    username: string,
-    classe: string,
-    level: number,
-    password: string,
-  ): Promise<IUser> => {
-    const query = 'INSERT INTO Trybesmith.users(username,classe,level,password) VALUES(?, ?, ?, ?)';
+  public createUser = async (user: IUser): Promise<IUser> => {
+    const { username, classe, level, password } = user;
+    const query = 'INSERT INTO Trybesmith.Users(username,classe,level,password) VALUES(?, ?, ?, ?)';
     const [newUser] = await connection.execute<ResultSetHeader>(
       query,
       [username, classe, level, password],

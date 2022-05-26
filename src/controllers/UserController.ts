@@ -12,9 +12,9 @@ export default class UserController {
 
   public createUser = async (req: Request, res: Response, _next: NextFunction):
   Promise<Response | void> => {
-    const { username, classe, level, password } = req.body;
+    const user = req.body;
     try {
-      const newUser = await this.service.createUser(username, classe, level, password);
+      const newUser = await this.service.createUser(user);
       return res.status(201).json(newUser);
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes('Product already exists')) {
