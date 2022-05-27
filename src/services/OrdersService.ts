@@ -12,9 +12,9 @@ export default class OrdersService {
     const products = await this.productsModel.getAll();
 
     const ordersFull = orders.map((order) => {
-      const productsId = products.filter((product) => product.orderId === order.id)
+      const productsIds = products.filter((product) => product.orderId === order.id)
         .map((p) => p.id);
-      return { ...order, productsId };
+      return { ...order, productsIds };
     });
     console.log(ordersFull);
     return ordersFull;
