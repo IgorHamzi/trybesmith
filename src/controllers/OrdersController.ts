@@ -4,15 +4,20 @@ import OrdersService from '../services/OrdersService';
 export default class OrdersController {
   public service = new OrdersService();
 
-  public getAllOrders = async (req: Request, res: Response, _next: NextFunction):
-  Promise<Response | undefined> => {
+  public getAll = async (_req: Request, res: Response): Promise<Response> => {
+    const orders = await this.service.getAllOrders();
+    return res.status(200).json(orders);
+  };
+
+  public create = async (req: Request, res: Response, next: NextFunction):
+  Promise<Response | void> => {
     try {
-      const orders = await this.service.getAllOrders();
-      return res.status(200).json(orders);
+      const { productsIds } = req.body;
+      const userId = req.body.user;
+      const newOrder = await this.service.create(userId, productsIds);
+      return res.status(201).json(newOrder);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
-      }
+      next(error);
     }
   };
 }

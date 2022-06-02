@@ -5,7 +5,7 @@ import IProduct from '../interfaces/ProductInterface';
 export default class ProductModel {
   public getAll = async (): Promise<IProduct[]> => {
     const [product] = await connection.execute(
-      'SELECT * FROM Trybesmith.Products',
+      'SELECT id, name, amount, orderId FROM Trybesmith.Products ORDER BY id;',
     );
     return product as IProduct[];
   };
@@ -17,5 +17,13 @@ export default class ProductModel {
     );
 
     return { id: product.insertId, name, amount };
+  };
+
+  public upDate = async (orderId: number, id: number): Promise<void> => {
+    await connection.execute(
+      `UPDATE Trybesmith.Products SET
+      orderId = ? WHERE id = ?;`,
+      [orderId, id],
+    );
   };
 }

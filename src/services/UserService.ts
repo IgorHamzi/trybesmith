@@ -1,10 +1,6 @@
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import UserModel from '../models/UserModel';
-import { IToken, IUser } from '../interfaces/UserInterface';
-
-dotenv.config();
-const JWTSECRET = process.env.JWT_SECRET || 'senha';
+import { IUser } from '../interfaces/UserInterface';
+import tokenGenerate from '../helpers/tokenGenerate';
 
 export default class UserService {
   public model = new UserModel();
@@ -14,14 +10,10 @@ export default class UserService {
     return users;
   };
 
-  public createUser = async (user: IUser): Promise<IToken> => {
-    const User = await this.model.createUser(user);
-
-    const token = jwt.sign({ id: User.id }, JWTSECRET, {
-      expiresIn: '7d',
-      algorithm: 'HS256',
-    });
-
-    return { token };
+  public create = async (username: string, classe: string, level: number, password: string):
+  Promise<string> => {
+    const { id } = await this.model.createUser(username, classe, level, password);
+    const userToken = tokenGenerate(id, username);
+    return userToken;
   };
 }

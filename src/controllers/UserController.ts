@@ -10,16 +10,14 @@ export default class UserController {
     return res.status(200).json(Users);
   };
 
-  public createUser = async (req: Request, res: Response, _next: NextFunction):
+  public create = async (req: Request, res: Response, next: NextFunction):
   Promise<Response | void> => {
-    const user = req.body;
     try {
-      const newUser = await this.service.createUser(user);
-      return res.status(201).json(newUser);
-    } catch (error: unknown) {
-      if (error instanceof Error && error.message.includes('Product already exists')) {
-        return res.status(409).json({ message: error.message });
-      }
+      const { username, classe, level, password } = req.body;
+      const token = await this.service.create(username, classe, level, password);
+      return res.status(201).json({ token });
+    } catch (error) {
+      next(error);
     }
   };
 }

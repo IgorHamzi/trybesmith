@@ -1,19 +1,15 @@
 import { Router } from 'express';
 import LoginController from '../controllers/LoginController';
-import {
-  validateLoginUsername,
-  validateLoginPassword,
-  UserExist,
-} from '../middlewares/LoginMiddlewares';
+import validateUserLogin from '../middlewares/ValidationUserLogin';
 
 const router = Router();
 
+const loginController = new LoginController();
+
 router.post(
   '/',
-  validateLoginUsername,
-  validateLoginPassword,
-  UserExist,
-  LoginController.create,
+  validateUserLogin,
+  loginController.login,
 );
 
 export default router; 

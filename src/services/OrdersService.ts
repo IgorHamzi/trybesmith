@@ -9,14 +9,27 @@ export default class OrdersService {
 
   public getAllOrders = async (): Promise<IOrder[]> => {
     const orders = await this.orderModel.getAllOrders();
-    const products = await this.productsModel.getAll();
+    return orders;
+  };
 
-    const ordersFull = orders.map((order) => {
-      const productsIds = products.filter((product) => product.orderId === order.id)
-        .map((p) => p.id);
-      return { ...order, productsIds };
+  public create = async (userId: number, productsIds: number[]): Promise<IOrder> => {
+    const orderId = await this.orderModel.create(userId);
+
+    if (productsIds.length !== 1) {
+      Promise.all(productsIds.map(async (id: number): Promise<void> => {
+        await this.productsModel.upDate(orderId, id);
+      }));
+      return {
+        userId,
+        productsIds,
+      } as IOrder;
+    }
+    productsIds.find(async (id: number): Promise<void> => {
+      await this.productsModel.upDate(orderId, id);
     });
-    console.log(ordersFull);
-    return ordersFull;
+    return {
+      userId,
+      productsIds,
+    } as IOrder;
   };
 }

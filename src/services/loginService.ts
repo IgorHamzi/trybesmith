@@ -1,12 +1,18 @@
-import { IUser } from '../interfaces/UserInterface';
-import createToken from '../token/token';
+import UserModel from '../models/UserModel';
+import tokenGenerate from '../helpers/tokenGenerate';
 
 class LoginService {
-  static create(user: IUser) : string {
-    const token = createToken(user);
+  public model = new UserModel();
 
-    return token;
-  }
+  public login = async (username: string, password: string): Promise<string> => {
+    const user = await this.model.findByNameAndPassword(username, password);
+    if (!user) return ('error');
+
+    const { id } = user;
+    const userToken = tokenGenerate(id, username);            
+
+    return userToken;
+  };
 }
 
 export default LoginService; 
